@@ -1,0 +1,14 @@
+title=Unit roster for EAW Remake: Clone Wars Holdouts,
+French Fried Taters
+description=A complete guide for buildable units and heroes (for now, space only) in the following mods set for Star Wars Empire at War, Force of Corruption:
+
+<a href="https://steamcommunity.com/workshop/filedetails/?id=1770851727">Remake 4.0</a>
+
+<a href="https://steamcommunity.com/workshop/filedetails/?id=2794270450">Clone Wars Holdout Factions Submod</a>
+
+<a href="https://steamcommunity.com/workshop/filedetails/?id=3229239424">French Fried Taters Sub-submod</a>
+
+Please help out by submitting your in-game screenshots either of specific units or of general gameplay. You can email them to me at ripoblus858[at]gmail.com, or join us on <a href="https://discord.com/channels/327563463952171009/1332752698621165711">Discord</a>.
+
+author=Contributors to this guide: Ripoblus, Sling Blade, KarlGerat-05 Loki, RevanInHeaven
+Github link: <a href="https://github.com/ripoblus858-droid/eaw-unit-glossary">https://github.com/ripoblus858-droid/eaw-unit-glossary</a>

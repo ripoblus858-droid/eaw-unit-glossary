@@ -1,0 +1,64 @@
+# faction_suffixes.txt
+#
+# The FACTION_SUFFIXES table: maps a Name-ending suffix to the
+# affiliation it implies, for two purposes in generate_glossary.py:
+#   - faction_group_key() strips a matching suffix off a unit's Name to
+#     get the base key used for merging faction-reskinned variants into
+#     one glossary row (see faction_group_key_for).
+#   - guessed_affiliation_label() uses a matching suffix as a LAST
+#     RESORT guess at a unit's affiliation, only when the unit has no
+#     Affiliation tag of its own (see get_affiliations).
+#
+# FORMAT: one "<suffix>,<label>" pair per line. A blank or "-" label
+# means "strip this suffix for grouping purposes, but never use it to
+# GUESS an affiliation" (see the "_CW" entry below for why). Lines
+# starting with # are comments; blank lines are ignored.
+#
+# ORDER MATTERS: this file is read top-to-bottom and the FIRST matching
+# suffix wins, so longer/more specific suffixes must be listed before
+# shorter ones that could be a false-positive substring of them. This
+# mod is inconsistent about short vs. full-word faction suffixes across
+# different unit families (e.g. Z-95 uses "_Rep" for Republic, but the
+# YT freighter squadrons use "_Republic" instead) -- both forms are
+# listed for every faction we've seen either form of, so far.
+#
+# A blank/"-" label means "strip this suffix for grouping purposes, but
+# never use it to GUESS an affiliation" -- "_CW" marks the Clone Wars
+# era, not a specific faction (a "_CW" unit could be CIS or Republic),
+# so guessing from the suffix alone would be a coin flip. This is safe
+# because the suffix-guess is only ever a last resort in
+# get_affiliations, used after checking the unit's own real Affiliation
+# tag first -- which real leaf units almost always declare directly
+# regardless of era.
+#
+# "_Required_Planets" is here for the same reason as "_CW": some
+# *_Required_Planets nodes (e.g. Star_Destroyer_Torpedo_Required_Planets)
+# are never inherited from by anything else, so the passthrough rule
+# (which only hides nodes something else inherits from) doesn't catch
+# them -- they'd otherwise sit as their own orphaned card right next to
+# the real leaf unit (Star_Destroyer_Torpedo) that shares every stat but
+# bypasses the _Required_Planets node in its own inheritance chain.
+# Stripping this suffix for grouping merges the two, and the planet
+# requirement shows up as a normal "Required Planets" attribute on the
+# merged row (see render_group_row).
+
+_Warlords,Warlords
+_Rep,Republic
+_Rep_CW,Republic
+_Rep_GCW,Republic
+_Republic,Republic
+_CSA,CSA
+_E,Empire
+_R,Rebel
+_U,Underworld
+_CU,Underworld
+_CIS,CIS
+_CIS_AI,CIS
+_CW,-
+_GCW,-
+_N,-
+_HC,Cartels
+_Hutt,Cartels
+_Mand,Mandalorians
+_Required_Planets,-
+_S,Sith

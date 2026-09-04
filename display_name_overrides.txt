@@ -1,0 +1,45 @@
+181st_Alpha_Defender_Squadron, 181st Alpha, Beta, Saber Defender Squadrons
+181st_Beta_Defender_Squadron, 181st Alpha, Beta, Saber Defender Squadrons
+181st_Saber_Defender_Squadron, 181st Alpha, Beta, Saber Defender Squadrons
+TIE_Defender_181st, 181st TIE Defender
+TIE_Defender_181st_Soontir, Soontir Fel Defender
+181st_Alpha_Fighter_Squadron, 181st Alpha, Beta, Saber TIE/LN Squadrons
+181st_Beta_Fighter_Squadron, 181st Alpha, Beta, Saber TIE/LN Squadrons
+181st_Saber_Fighter_Squadron, 181st Alpha, Beta, Saber TIE/LN Squadrons
+TIE_Fighter_181st, 181st TIE/LN
+TIE_Fighter_181st_Soontir, Soontir Fel TIE/LN
+181st_Alpha_Interceptor_Squadron, 181st Alpha, Beta, Saber TIE/IN Squadrons
+181st_Beta_Interceptor_Squadron, 181st Alpha, Beta, Saber TIE/IN Squadrons
+181st_Saber_Interceptor_Squadron, 181st Alpha, Beta, Saber TIE/IN Squadrons
+TIE_Interceptor_181st, 181st TIE/IN
+TIE_Interceptor_181st_Soontir, Soontir Fel TIE/IN
+181st_Bomber_Squadron, 181st Gamma TIE/SA Squadrons
+Black_Squadron_Actis, Black Squadron (Eta-2 Actis)
+Vader_Eta2_Actis, Darth Vader Eta-2 Actis
+Vader_Venator, Darth Vader - Venator Predator
+Black_Squadron, Black Squadron (TIE/LN)
+TIE_Advanced, Vader's TIE Advanced x1
+Black_TIE_Fighter, Black Squadron TIE/LN
+Dedra_Meero_MTC, Dedra Meero – Vigilance (YE-4 Gunship)
+Integrity, Lieutenant Lorth Needa - Integrity (Carrack-class)
+Integrity_CW_Rep, Lieutenant Lorth Needa - Integrity (Carrack-class)
+HMP_Gunship_Squadron_CIS, HMP Gunship Squadron
+HMP_Gunship_Squadron, HMP Gunship Squadron
+Magnaguard_Escort_Lead, Magnaguard Escort Lead
+Magnaguard_Escort_Flight_Member, Magnaguard Escort Flight Member
+SoroSuub_Enforcer_Lead, SoroSubb Enforcer Lead
+SoroSuub_Enforcer_Bomber, SoroSubb Enforcer Bomber
+Kraytfang, Trex - Krayt Fang (YT-1300)
+Reaper_Squadron_Whisper, Reaper Squadron - Captain Whisper
+Reaper_Squadron_Fighter, Reaper Squadron – Z-95 CVMR
+Defender_Leader_Y, Defender Wing Leader
+Defender_Y, Defender Wing Y-Wing
+Defender_Leader_K, Defender Wing Leader
+Defender_K, Defender Wing K-Wing
+Rogue_1, Rogue 1 X-Wing
+Rogue_2, Rogue Squadron X-Wing
+Tyber_Zann_Interceptor-IV, Tyber Zann - Twi'lek Dancer
+Tyber_Zann_The_Merciless, Tyber Zann - The Merciless
+Imperial_YE4_Gunship_Squadron, YE-4 Gunship Squadron
+Munificent_Frigate_CIS_Captain, Munificent-class CIS Captain
+Kenobi_Short_Negotiations, Obi-Wan Kenobi - Short Negotiations

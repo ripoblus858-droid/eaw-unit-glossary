@@ -1,0 +1,440 @@
+"""
+styles.py -- the glossary page's CSS, as its own template string.
+
+PAGE_CSS still gets its own .format() call (in html_output.py) to fill
+in image_size/image_container_max/image_bg_color, so literal CSS
+braces stay double-escaped ({{ }}) here, same as they were embedded in
+the old single monolithic PAGE_TEMPLATE.
+"""
+
+PAGE_CSS = """
+  :root {{ color-scheme: dark; }}
+  body {{ font-family: system-ui, sans-serif; background:#12141a; color:#e7e9ee; margin:0; padding:24px; }}
+  h1 {{ margin-top:0; }}
+  .controls {{ display:flex; gap:12px; margin-bottom:20px; flex-wrap:wrap; }}
+  .controls input {{
+    background:#1c1f28; color:#e7e9ee; border:1px solid #333; border-radius:6px; padding:8px 10px;
+    min-width:240px;
+  }}
+
+  /* Faceted filter bar: one row per filter group (Affiliation, Class,
+     Required Planets), each a set of independently toggleable chips.
+     Checked chips within a group are OR'd together; the groups
+     themselves are AND'd -- see applyFilter(). */
+  .filters {{ display:flex; flex-direction:column; gap:8px; margin-bottom:16px; }}
+  .filter-group {{ display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; }}
+  .filter-group-title {{ font-size:0.78em; color:#8a8f9c; min-width:120px; flex:0 0 auto; }}
+  .filter-chips {{ display:flex; flex-wrap:wrap; gap:6px; }}
+  .chip {{
+    display:inline-flex; align-items:center; gap:5px; background:#1c1f28;
+    border:1px solid #333; border-radius:999px; padding:4px 11px; font-size:0.8em;
+    cursor:pointer; user-select:none; color:#c7cad1;
+  }}
+  .chip input {{ accent-color:#8fb8e8; margin:0; }}
+  .chip.active {{ background:#28405e; border-color:#4a6fa5; color:#e7e9ee; }}
+  .clear-filters {{
+    align-self:flex-start; background:none; border:none; color:#8fb8e8; font-size:0.78em;
+    cursor:pointer; padding:2px 0; text-decoration:underline;
+  }}
+  .count {{ color:#8a8f9c; margin-bottom:16px; }}
+
+  /* One section per source XML file. */
+  .file-group {{ margin-bottom: 26px; }}
+  .file-group-title {{
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size:0.85em; color:#c7cad1; background:#181b22; border:1px solid #2c2f3a;
+    border-radius:6px; padding:6px 12px; margin:0 0 10px; display:inline-block;
+  }}
+  .file-group-count {{ color:#6b7280; font-weight:normal; margin-left:6px; }}
+  .rows {{ display:flex; flex-direction:column; gap:10px; }}
+
+  /* One row per glossary entry (or merged variant group). */
+  .row {{
+    display:flex; gap:16px; flex-wrap:wrap; align-items:flex-start;
+    background:#1c1f28; border:1px solid #2c2f3a; border-radius:10px; padding:12px 16px;
+  }}
+  /* A squadron row's icon gallery (row-image) stays a plain sibling in
+     the base .row flex layout above -- top-aligned via .row's own
+     align-items:flex-start, but deliberately kept OUT of the grid
+     below, so its height (which can grow if the gallery wraps to
+     several rows of icons) never affects the formation column's
+     height. row-squadron-body is the actual grid: [title+stats |
+     formation] on top, with the description + fighter-stat cards
+     spanning both columns underneath -- so lower content's left edge
+     lines up with the stats column's left edge, and its right edge
+     lines up with the formation column's right edge (see
+     render_group_row). align-items:start (rather than grid's default
+     stretch) keeps each column sized to its own natural content height
+     -- the formation column renders at a fixed pixel size regardless
+     (see render_formation_diagram/.formation-box) and should never be
+     stretched taller than that just because the title+stats column
+     beside it happens to be taller, or vice versa.
+     .row--squadron overrides .row's own flex-wrap:wrap: with wrapping
+     allowed, row-image and row-squadron-body dropping to separate
+     lines whenever they don't both fit on one is exactly what put the
+     image ABOVE everything else instead of beside it -- nowrap keeps
+     them side by side (and top-aligned, via .row's align-items) no
+     matter how wide row-squadron-body's content wants to be. */
+  .row--squadron {{ flex-wrap:nowrap; }}
+  .row-squadron-body {{
+    display:grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-rows: auto auto;
+    column-gap:16px; row-gap:12px; align-items:start; flex:1 1 auto; min-width:0;
+  }}
+  .row-grid-middle {{ grid-column:1; grid-row:1; display:flex; flex-direction:column; gap:10px; min-width:0; }}
+  .row-grid-formation {{ grid-column:2; grid-row:1; min-width:0; }}
+  .row-grid-lower {{ grid-column:1 / 3; grid-row:2; min-width:0; }}
+  /* .row-garrison's flex-basis (below) assumes being a horizontal flex
+     sibling in .row-content -- in row-grid-middle's vertical flex
+     stack, that same flex-basis would instead ask for 220px of
+     HEIGHT, so it's neutralized here. (Squadrons in this mod never
+     actually have their own garrison, but kept correct regardless.) */
+  .row-grid-middle > .row-garrison {{ flex:none; }}
+
+  .row-image {{
+    flex:0 0 auto; max-width:{image_container_max}px; display:flex; flex-direction:column;
+    align-items:center; justify-content:center;
+    background:{image_bg_color}; border-radius:8px; padding:8px; min-height:64px; min-width:64px;
+  }}
+  .row-image img {{ width:{image_size}px; height:{image_size}px; object-fit:contain; display:block; margin:0 auto; }}
+  /* A squadron's own icon, shown alone on its own centered row above
+     the fighter gallery below it (see render_image_block's
+     lead_image_and_label) -- separated with a thin divider so it
+     visually reads as "the squadron" distinct from "its fighters". */
+  .img-lead-row {{
+    display:flex; justify-content:center; width:100%;
+    margin-bottom:8px; padding-bottom:8px; border-bottom:1px solid #2c2f3a;
+  }}
+  .img-row {{ display:flex; gap:10px; flex-wrap:wrap; justify-content:center; align-items:flex-start; }}
+  .img-slot {{ text-align:center; width:{image_size}px; max-width:{image_size}px; display:flex; flex-direction:column; align-items:center; }}
+  .img-caption {{ font-size:0.7em; color:#8a8f9c; margin-top:4px; text-align:center; line-height:1.3; word-wrap:break-word; overflow-wrap:break-word; }}
+  .img-caption-sub {{ font-size:0.66em; color:#6b7280; margin-top:1px; }}
+  .img-fallback {{ padding:14px; text-align:center; color:#6b7280; font-size:0.85em; }}
+  /* Garrisoned units'/squadrons' own icons, shown under the ship's own
+     image(s) -- same divider treatment as .img-lead-row above (a thin
+     top border) so it visually reads as a distinct "this is who's
+     garrisoned here" section rather than blending into the ship's own
+     gallery above it. */
+  .row-garrison-images {{
+    margin-top:8px; padding-top:8px; border-top:1px solid #2c2f3a; width:100%;
+  }}
+  .row-garrison-images-label {{
+    font-size:0.68em; color:#7d8290; font-weight:600; text-transform:uppercase;
+    letter-spacing:0.03em; text-align:center; margin-bottom:6px;
+  }}
+
+  /* In-game screenshot thumbnails (manual associations -- see
+     load_in_game_images / --in-game-images) -- same divider/label
+     treatment as .row-garrison-images just above, stacked beneath it
+     in the same .row-image column. Sized to the FULL width of that
+     column (matching {image_container_max}, the same width the ship's
+     own icon gallery is capped to) rather than a small fixed
+     thumbnail, with height left to the image's own aspect ratio
+     (object-fit intentionally NOT used here, unlike other galleries
+     on the page -- a cropped 16:9 screenshot loses real information a
+     square icon crop doesn't). Multiple screenshots stack vertically
+     (flex-direction:column) rather than side by side, since each one
+     already claims the column's full width on its own. Clicking one
+     calls openImageModal() to show it full-size in the page-wide
+     #image-modal overlay below (one shared modal per page, not a
+     panel per row). */
+  .row-in-game-images {{
+    margin-top:8px; padding-top:8px; border-top:1px solid #2c2f3a; width:100%;
+  }}
+  .row-in-game-images-label {{
+    font-size:0.68em; color:#7d8290; font-weight:600; text-transform:uppercase;
+    letter-spacing:0.03em; text-align:center; margin-bottom:6px;
+  }}
+  .in-game-thumb-row {{ display:flex; flex-direction:column; gap:6px; }}
+  .in-game-thumb {{
+    cursor:pointer; border-radius:6px; overflow:hidden; border:1px solid #2c2f3a;
+    transition:border-color .15s;
+  }}
+  .in-game-thumb:hover {{ border-color:#8fb8e8; }}
+  .in-game-thumb img {{ display:block; width:100%; height:auto; }}
+
+  /* Full-page modal overlay for viewing an in-game screenshot at full
+     size (see openImageModal/closeImageModal in page_script.py) -- ONE
+     shared overlay per page (lives once in page_template.PAGE_TEMPLATE,
+     right after #groups), not a panel per row. Hidden by default via
+     display:none; the .open class (toggled by JS) switches it to
+     flex so the image centers both ways with CSS alone. */
+  .image-modal-overlay {{
+    display:none; position:fixed; inset:0; z-index:1000;
+    align-items:center; justify-content:center; padding:5vh 5vw;
+    background:rgba(8,9,12,0.88);
+  }}
+  .image-modal-overlay.open {{ display:flex; }}
+  .image-modal-img {{
+    display:block; max-width:100%; max-height:100%;
+    border-radius:8px; box-shadow:0 12px 48px rgba(0,0,0,0.6);
+  }}
+  .image-modal-close {{
+    position:fixed; top:20px; right:24px; z-index:1001;
+    background:#1c1f28; color:#e7e9ee; border:1px solid #333; border-radius:6px;
+    padding:6px 14px; font-size:0.9em; cursor:pointer;
+  }}
+  .image-modal-close:hover {{ background:#28405e; border-color:#4a6fa5; }}
+
+  .row-body {{ flex:1 1 420px; min-width:0; }}
+  .row-header h2 {{ margin:0 0 2px; font-size:1.1em; }}
+  .meta {{ color:#8a8f9c; font-size:0.78em; margin-bottom:4px; }}
+
+  /* Attribute columns within a row: general stats, hardpoints, garrison
+     sit side by side, each internally wrapping its own stat-items into
+     multiple columns. (Standalone/non-squadron rows only -- a squadron
+     row uses the grid layout above instead.) */
+  .row-content {{ display:flex; gap:20px; flex-wrap:wrap; margin-top:6px; }}
+  .row-general {{ flex:2 1 260px; min-width:0; }}
+  .row-stats {{
+    display:grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap:4px 14px; align-content:start;
+  }}
+  /* A squadron's general stats fix to exactly 2 columns (see
+     render_group_row) instead of the auto-fill column count above,
+     which packs in as many columns as the available width allows. */
+  .row-general--squadron .row-stats {{
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }}
+  .row-hardpoints {{ flex:1 1 220px; min-width:0; }}
+  .row-garrison {{ flex:1 1 220px; min-width:0; }}
+  h3 {{ font-size:0.85em; margin:0 0 4px; color:#9aa0ad; font-weight:600; text-transform:uppercase; letter-spacing:0.02em; }}
+  /* min-width:0 overrides the browser default of min-width:auto on
+     flex/grid items, which otherwise refuses to shrink an item below
+     its content's natural width -- without it, a long unbroken label
+     (e.g. a hardpoint type name) forces its grid cell wider than the
+     track actually is and spills text over neighboring cells. Label
+     and value sit as two grid columns on the SAME line (rather than
+     stacked) to save vertical space -- each column can still shrink
+     to 0 and wrap its own text via overflow-wrap, so a long label or
+     value wraps within its own column onto a second line instead of
+     overflowing into the next stat-item, the same overlap this
+     min-width:0 rule originally fixed. */
+  .stat-item {{
+    display:grid; grid-template-columns: minmax(0, auto) minmax(0, 1fr);
+    align-items:start; column-gap:8px; min-width:0;
+    font-size:0.85em; border-bottom:1px dashed #2c2f3a; padding:3px 0;
+  }}
+  .stat-label {{ color:#9aa0ad; overflow-wrap:break-word; min-width:0; }}
+  .stat-value {{ text-align:right; font-weight:500; overflow-wrap:break-word; min-width:0; }}
+  .stat-value-missing {{ color:#c9a24a; font-weight:400; font-style:italic; }}
+  .tier {{ font-size:0.82em; border-top:1px solid #2c2f3a; padding:5px 0; }}
+  .tier div {{ color:#9aa0ad; }}
+  .note {{ font-size:0.76em; color:#c9a24a; margin:4px 0 0; }}
+  .row-planets {{ font-size:0.85em; color:#c7cad1; margin-top:8px; }}
+  .row-structures {{ font-size:0.85em; color:#c7cad1; margin-top:8px; }}
+  .row-description {{ font-size:0.85em; color:#c7cad1; font-style:italic; margin:8px 0 0; line-height:1.4; }}
+
+  /* Compact inline accuracy-by-class list -- "Fighter 25 · Bomber 20
+     · Capital 10" as one flowing line instead of a boxed stat-item
+     per class, since a hardpoint can declare up to ~9 classes and the
+     boxed layout took a lot of vertical room for what's a short,
+     skimmable list. */
+  .hp-accuracy-compact {{ font-size:0.8em; color:#c7cad1; line-height:1.7; }}
+  .hp-accuracy-compact .acc-class {{ color:#9aa0ad; }}
+  .hp-accuracy-compact .acc-value {{ color:#e7e9ee; font-weight:600; margin-right:2px; }}
+  .hp-accuracy-compact .acc-sep {{ color:#4a4e5a; margin:0 5px; }}
+
+  /* Expandable per-hardpoint detail list -- collapsed by default via
+     the native <details> element, no JS needed. */
+  .hp-details-toggle {{ margin-top:8px; }}
+  .hp-details-toggle summary {{
+    cursor:pointer; font-size:0.8em; color:#8fb8e8; list-style:none;
+  }}
+  .hp-details-toggle summary::-webkit-details-marker {{ display:none; }}
+  .hp-details-toggle summary::before {{ content:"▸  "; }}
+  .hp-details-toggle[open] summary::before {{ content:"▾  "; }}
+  .hp-detail-list {{ display:flex; flex-direction:column; gap:8px; margin-top:8px; }}
+  .hp-detail-card {{
+    background:#181b22; border:1px solid #2c2f3a; border-radius:8px; padding:8px 10px;
+  }}
+  .hp-detail-header {{ font-size:0.85em; font-weight:600; margin-bottom:4px; }}
+  .hp-detail-header .meta {{ font-weight:400; margin-bottom:0; display:inline; }}
+  .hp-detail-section {{ margin-top:6px; }}
+  .hp-detail-section h4 {{
+    font-size:0.75em; margin:0 0 3px; color:#9aa0ad; font-weight:600;
+    text-transform:uppercase; letter-spacing:0.02em;
+  }}
+  .hp-detail-section h4 .meta {{
+    text-transform:none; letter-spacing:normal; font-weight:400; display:inline; margin-bottom:0;
+  }}
+
+  /* This adjacent-sibling border/margin is for a standalone unit's
+     Hardpoints column (only ever one hp-member-block there, so this
+     never fires) and is otherwise unused today -- kept scoped rather
+     than removed in case a future column stacks multiple
+     hp-member-block elements again. Deliberately NOT scoped to
+     .fighter-card-col: within a fighter card, the Stats and
+     Hardpoints columns each hold their own single hp-member-block-
+     style content and are never siblings of each other at that level
+     (see .fighter-card-columns below), so this rule wouldn't apply
+     there regardless. */
+  .row-general .hp-member-block + .hp-member-block,
+  .row-hardpoints .hp-member-block + .hp-member-block {{
+    margin-top:12px; padding-top:12px; border-top:1px solid #2c2f3a;
+  }}
+  .hp-member-heading {{
+    font-size:0.85em; font-weight:600; color:#e7e9ee; margin-bottom:4px;
+  }}
+
+  /* Per-fighter breakdown for a squadron: one card per distinct
+     fighter, headed by that fighter's own name, with a Stats column
+     and a Hardpoints column side by side underneath -- background and
+     border on the card itself visually group both columns as
+     belonging to that one fighter (see render_group_row). */
+  .row-members {{ margin-top:14px; }}
+  .fighter-card {{
+    background:#181b22; border:1px solid #2c2f3a; border-radius:8px;
+    padding:10px 14px; margin-top:10px;
+  }}
+  .fighter-card-heading {{
+    font-size:0.9em; font-weight:600; color:#e7e9ee; margin-bottom:8px;
+  }}
+  .fighter-card-label {{ color:#9aa0ad; font-weight:400; }}
+  .fighter-card-columns {{ display:flex; gap:20px; flex-wrap:wrap; }}
+  .fighter-card-col {{ flex:1 1 200px; min-width:0; }}
+
+  /* Formation-shape diagram built from a squadron's own Squadron_
+     Offsets tags (see parse_squadron_offsets / render_formation_diagram)
+     -- lives in .row-grid-formation, its own rightmost column. The
+     diagram now renders at a FIXED pixel size (set inline by
+     render_formation_diagram, both on the SVG and on the legend's
+     height) rather than stretching to match the title+stats column
+     beside it, so .formation-box just sizes to that fixed content --
+     no height:100% here, and .row-squadron-body's grid-level
+     align-items:start (not stretch) means the formation column is
+     never force-stretched taller than its own content either. It's a
+     column: a "Formation" label on top (outside the plotted square,
+     but inside the box -- see render_group_row), then the plot row
+     (SVG + legend) below it. */
+  .formation-box {{
+    box-sizing:border-box;
+    display:flex; flex-direction:column; align-items:center; gap:6px; padding:8px;
+    background:#181b22; border:1px solid #2c2f3a; border-radius:8px;
+  }}
+  .formation-label {{
+    font-size:0.68em; color:#7d8290; font-weight:600; text-transform:uppercase; letter-spacing:0.03em;
+  }}
+  .formation-plot-row {{
+    display:flex; align-items:center; justify-content:center; gap:8px;
+  }}
+  .formation-svg {{ display:block; }}
+  /* Altitude legend: a vertical gradient bar beside the SVG (not a
+     horizontal one under it), so it adds width, not height. Laid out
+     as a ROW (title | labels+bar), not a column with the title
+     stacked above the bar. Every element here (the wrap, the row, the
+     bar, and the labels container) gets the SAME fixed pixel height
+     inline from render_formation_diagram -- matching the SVG's own
+     fixed height directly, rather than relying on CSS stretch to
+     equalize them -- so the colorbar's top/bottom line up with the
+     plot square beside it regardless of window size. */
+  .formation-legend-wrap {{ display:flex; align-items:center; }}
+  .formation-legend {{ display:flex; align-items:stretch; gap:4px; }}
+  .formation-legend-title {{
+    writing-mode:vertical-rl; transform:rotate(180deg); white-space:nowrap;
+    display:flex; align-items:center; justify-content:center;
+    font-size:0.62em; color:#7d8290; font-weight:600; text-transform:uppercase; letter-spacing:0.03em;
+  }}
+  .formation-legend-bar-row {{ display:flex; gap:4px; align-items:stretch; }}
+  .formation-legend-bar {{ width:6px; border-radius:3px; }}
+  /* Position:relative + absolute-positioned children (top:0/bottom:0)
+     instead of a flex column with justify-content:space-between --
+     pinning both labels directly to their (fixed-height, set inline)
+     container's own top and bottom edges is simpler and exact, rather
+     than relying on flex distribution to land them there. An explicit
+     WIDTH here is required, not just cosmetic -- position:absolute
+     takes the spans out of normal flow, so this container has nothing
+     left to size its own width against (auto would collapse to 0),
+     and its flex sibling (.formation-legend-bar) would slide left
+     into that space, landing right under the still-rendered-but-now-
+     unreserved label text. */
+  .formation-legend-labels {{
+    position:relative; width:26px;
+    font-size:0.65em; color:#7d8290;
+  }}
+  .formation-legend-labels span {{ position:absolute; left:0; right:0; text-align:right; }}
+  .formation-legend-labels span:first-child {{ top:0; }}
+  .formation-legend-labels span:last-child {{ bottom:0; }}
+
+  /* Intro/splash page (see page_template.SPLASH_TEMPLATE) -- reuses
+     the same dark theme/palette as the main glossary pages (this CSS
+     is shared by both templates) rather than a bespoke look. */
+
+  /* Header row: a small "identity" icon for the mod (--mod-icon)
+     beside the title and the author/credits block -- all three are
+     optional (see html_output.generate_html), so this still lays out
+     sensibly with just a title and nothing else. */
+  .splash-header {{ display:flex; align-items:center; gap:20px; margin-bottom:8px; }}
+  .splash-mod-icon {{
+    width:96px; height:96px; object-fit:contain; border-radius:12px;
+    background:#1c1f28; border:1px solid #2c2f3a; padding:8px; flex:0 0 auto;
+  }}
+  .splash-header-text {{ min-width:0; }}
+  .splash-header-text h1 {{ margin:0 0 4px; }}
+  .splash-author {{
+    color:#8a8f9c; font-size:0.85em; line-height:1.5; white-space:pre-line;
+  }}
+
+  /* Overview description -- a multi-line config value (see
+     load_splash_config) split into one <p> per blank-line-separated
+     paragraph, same convention resolve_description already uses for
+     an in-game unit's own flavor text. */
+  .splash-description {{ color:#c7cad1; max-width:720px; line-height:1.6; margin:18px 0; }}
+  .splash-description p {{ margin:0 0 12px; }}
+  .splash-description p:last-child {{ margin-bottom:0; }}
+
+  /* Links inside the author/description blocks -- see
+     html_output.generate_html, which passes these two through as raw
+     HTML rather than escaping them, specifically so a real <a href>
+     written in --splash-config renders as an actual clickable link. */
+  .splash-author a, .splash-description a {{
+    color:#8fb8e8; text-decoration:underline;
+  }}
+  .splash-author a:hover, .splash-description a:hover {{
+    color:#a8cdf0;
+  }}
+
+  /* Large illustrative gameplay image (--gameplay-image) -- a single
+     banner-style image, capped in height so a very tall screenshot
+     doesn't dominate the whole page, and capped in WIDTH to match
+     .splash-faction-grid's own max-width just below it, so the two
+     sections line up instead of the image spanning the full page
+     while the grid beneath it stays narrower. */
+  .splash-gameplay-image {{ margin:18px 0 28px; max-width:900px; }}
+  .splash-gameplay-image img {{
+    display:block; width:100%; max-height:420px; object-fit:cover;
+    border-radius:12px; border:1px solid #2c2f3a;
+  }}
+
+  .splash-section-title {{
+    font-size:0.85em; color:#9aa0ad; text-transform:uppercase; letter-spacing:0.04em;
+    font-weight:600; margin:0 0 14px;
+  }}
+
+  /* Faction grid -- one card per faction, each with a large logo
+     image (--faction-logos / --faction-logos-dir) above its name and
+     entry count. A faction with no logo configured just omits
+     .splash-faction-logo-wrap entirely rather than showing a broken-
+     image icon -- see the faction card building in
+     html_output.generate_html. Fixed at exactly 6 columns (not
+     auto-fill) so 6 cards always sit on one row within the grid's own
+     900px max-width, rather than however many happen to fit a given
+     minimum card width. */
+  .splash-faction-grid {{
+    display:grid; grid-template-columns:repeat(6, 1fr);
+    gap:14px; max-width:900px;
+  }}
+  .splash-faction-card {{
+    display:flex; flex-direction:column; align-items:center; text-align:center;
+    background:#1c1f28; border:1px solid #2c2f3a; border-radius:12px;
+    padding:14px 8px; color:#e7e9ee; text-decoration:none;
+    transition:border-color .15s, background .15s;
+  }}
+  .splash-faction-card:hover {{ border-color:#4a6fa5; background:#20242f; }}
+  .splash-faction-logo-wrap {{
+    width:100%; height:70px; display:flex; align-items:center; justify-content:center;
+    margin-bottom:8px;
+  }}
+  .splash-faction-logo {{ max-width:100%; max-height:100%; object-fit:contain; }}
+  .splash-faction-name {{ font-size:0.9em; font-weight:600; }}
+  .splash-faction-count {{ color:#8a8f9c; font-size:0.72em; font-weight:400; margin-top:3px; }}
+"""

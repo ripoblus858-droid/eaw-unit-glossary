@@ -1,0 +1,12 @@
+Cartels,Desilijic_clan_vector.png,Hutt Cartels
+CIS,CIS_roundel.png, Confederacy of Independent Systems
+CSA,CSAcolor.png,Corporate Sector Authority
+Empire,Imperial_Emblem_white.png,Galactic Empire
+Hapan,Hapes_Consortium.png,Hapes Consortium
+Mandalorians,JaingHead_darkgreen.png,Mandalorians
+Neutral,Blacksun.png,Pirates
+Rebel,Redstarbird.png,Rebel Alliance
+Republic,Republic_Emblem.png,Galactic Republic
+Sith,Revanchist_Sith_maroon.png,Sith Empire
+Underworld,Zann_Consortium.png,Underworld
+Warlords,TarkinInitiative.png,Imperial Warlords
