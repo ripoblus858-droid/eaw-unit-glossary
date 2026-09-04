@@ -28,7 +28,7 @@ and your own parameter files/images. A layout that matches the example
 command later in this doc:
 
 ```
-changed_files/
+unit_glossary/
 ├── generate_glossary.py
 ├── glossary_gen/                  (the tool's own package -- don't edit)
 ├── convert_icons.py
