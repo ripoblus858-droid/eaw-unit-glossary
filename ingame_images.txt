@@ -4,7 +4,7 @@ TIE_Bomber_Squadron, tiebomber1.png, tiebomber2.png
 Tartan_Patrol_Cruiser, tartan1.png, tartan2.png
 IPV1_System_Patrol_Craft, ipv1.png
 Gladiator_Star_Destroyer, impgladiator1.png, impgladiator2.png
-Imperial_Nebulon_B_Frigate, impnebulon1.png, impnebulon2.png
+Imperial_Nebulon_B_Frigate, impnebulonb1.png, impnebulonb2.png
 Consular_E, impc9charger1.png, impc9charger2.png
 VictoryII_Frigate_E, longbow1.png, longbow_rep1.png
 Recusant_Destroyer_CIS, recusant1.png, recusant2.png
@@ -53,3 +53,4 @@ LOSS_Fighter_Squadron_CIS, nighthawk.png
 Allocator_Destroyer_CIS, allocator.png
 Sabaoth_Destroyer_CIS, sabaoth_cis.png
 Geonosian_Cruiser_CIS, geonosian.png, geonosian2.png
+J45_Sabre_Heavy_Squadron, j45_heavysabre.png, j45_heavysabre2.png

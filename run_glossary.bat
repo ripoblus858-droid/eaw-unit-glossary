@@ -9,7 +9,7 @@ python generate_glossary.py ^
 	--display-name-overrides display_name_overrides.txt ^
 	--projectiles ^
 	"C:\Program Files (x86)\Steam\steamapps\workshop\content\32470\3229239424\Data\Xml\PROJECTILES.XML" ^
-	--output index.html ^
+	--output glossary.html ^
 	--images-dir png_images ^
 	--translations ^
 	"C:\Program Files (x86)\Steam\steamapps\workshop\content\32470\3229239424\Data\Text\xml\TranslationManifest.xml" ^
